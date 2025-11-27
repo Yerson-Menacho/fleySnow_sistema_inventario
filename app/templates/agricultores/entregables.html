@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Entregables del Agricultor</h2>
+    <h4>{{ agricultor.nombres }} {{ agricultor.apellidos }} 
+        <small class="text-muted">(Código: {{ agricultor.codigo_agricultor }})</small>
+    </h4>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th>Variedad</th>
+            <th>Jabas Entregadas</th>
+            <th>Jabas Devueltas</th>
+            <th>Saldo</th>
+            <th>Total Kilos Bruto</th>
+            <th>Total Kilos Neto</th>
+            <th>Última Fecha</th>
+            <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in entregables %}
+            <tr>
+                <td>{{ e.variedad }}</td>
+                <td>{{ e.jabas_entregadas }}</td>
+                <td>{{ e.jabas_devueltas }}</td>
+                <td>{{ e.saldo_jabas }}</td>
+                <td>{{ e.total_kilos_bruto }}</td>
+                <td>{{ e.total_kilos_neto }}</td>
+                <td>{{ e.ultima_fecha }}</td>
+                <td>{{ e.estado }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+
+    <a href="{{ url_for('agricultores.index') }}" class="btn btn-secondary mt-3">← Volver</a>
+</div>
+{% endblock %}

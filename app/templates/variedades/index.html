@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado de Variedades{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Listado de Variedades</h2>
+    <div class="acciones" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        {% if tiene_permiso('insumos.var_crear') %}
+            <a href="{{ url_for('variedades.nueva_variedad') }}" class="btn">➕ Nueva Variedad</a>
+        {% endif %}
+        
+        <a href="{{ url_for('insumos.index') }}" class="btn btn-secondary">↩️ Volver a Insumos</a>        
+        
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for var in variedades %}
+            <tr>
+                <td>{{ var.id_variedad }}</td>
+                <td>{{ var.codigo_variedad }}</td>
+                <td>{{ var.nombre_variedad }}</td>
+                <td>{{ var.nombre_categoria }}</td>
+                <td>
+                    {% if tiene_permiso('insumos.var_editar') %}
+                        <a href="{{ url_for('variedades.editar_variedad', id_variedad=var.id_variedad) }}">✏️ Editar</a>
+                    {% endif %}
+
+                    {% if tiene_permiso('insumos.var_eliminar') %}
+                        <a href="{{ url_for('variedades.eliminar_variedad_route', id_variedad=var.id_variedad) }}" onclick="return confirm('¿Seguro que deseas eliminar esta variedad?')">🗑️ Eliminar</a>
+                    {% endif %}
+                    
+                    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+

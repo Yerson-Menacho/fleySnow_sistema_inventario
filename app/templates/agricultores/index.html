@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado de Agricultores{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Listado de Agricultores</h2>
+    <div class="header-row d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center">
+            {% if tiene_permiso('agricultores.crear') %}
+                <a href="{{ url_for('agricultores.nuevo_agricultor') }}" class="btn">➕ Nuevo Agricultor</a>
+            {% endif %}
+        </div>
+        <!-- Lado izquierdo: Reporte -->
+        <div class="form-row-busqueda">  
+            <!-- Buscador rápido -->
+            <div class="form-group">
+                <label for="q">Buscar (nombre, DNI o código)</label>
+                <input type="text" id="q" name="q" class="form-control" placeholder="Ingrese Nombre, Codigo o DNI.....">
+            </div>
+            <div class="form-group">
+                {% if tiene_permiso('usuarios.ver') %}
+                    <a href="{{ url_for('reportes.vista_reporte_agricultores') }}" class="btn btn-secondary me-3">📊 Ver Reporte</a>
+                {% endif %}
+            </div>
+                
+        </div>
+    </div>
+    
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>DNI</th>
+                <th>Nombre Completo</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Correo</th>
+                <th>Zona</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agri in agricultores %}
+            <tr>
+                <td>{{ agri.codigo_agricultor }}</td>
+                <td>{{ agri.dni }}</td>
+                <td>{{ agri.nombre_completo }}</td>
+                <td>{{ agri.telefono }}</td>
+                <td>{{ agri.direccion }}</td>
+                <td>{{ agri.correo }}</td>
+                <td>{{ agri.zona }}</td>
+                <td>
+                    {% if agri.estado %}
+                        <span class="badge bg-success">Activo</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactivo</span>
+                    {% endif %}
+                </td>
+                <td class="nowrap">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            ⚙️ Acciones
+                        </button>
+                        <ul class="dropdown-menu">
+
+                            <!-- Editar Agricultor -->
+                            {% if tiene_permiso('agricultores.editar') %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('agricultores.editar_agricultor', id_agricultor=agri.id_agricultor) }}">✏️ Editar</a>
+                                </li>
+                            {% endif %}
+
+                            <!-- Ver detalles -->
+                            {% if tiene_permiso('agricultores.detalles') %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('agricultores.detalle_agricultor', id_agricultor=agri.id_agricultor) }}">👁️ Ver</a>
+                                </li>
+                            {% endif %}
+
+                            <!-- NUEVA OPCIÓN: Ver Jabas -->
+                            {% if tiene_permiso('agricultores.entregables') %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('agricultores.entregables_agricultor', id_agricultor=agri.id_agricultor) }}">📦 Historial de entrega</a>
+                                </li>
+                            {% endif %}
+
+                            <!-- Cambiar estado (Activo / Inactivo) -->
+                            {% if tiene_permiso('agricultores.estado') %}
+                                {% if agri.estado == 'Activo' %}
+                                    <li>
+                                        <a class="dropdown-item" href="{{ url_for('agricultores.desactivar_agricultor_route', id_agricultor=agri.id_agricultor) }}"
+                                        onclick="return confirm('¿Seguro que deseas desactivar a este agricultor?')">🛑 Anular</a>
+                                    </li>
+                                {% else %}
+                                    <li>
+                                        <a class="dropdown-item" href="{{ url_for('agricultores.activar_agricultor_route', id_agricultor=agri.id_agricultor) }}"
+                                        onclick="return confirm('¿Seguro que deseas activar a este agricultor?')">✅ Activar</a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

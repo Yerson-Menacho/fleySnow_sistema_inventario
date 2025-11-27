@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado de Insumos{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Lista de Insumos</h2>
+    <div class="header-row d-flex justify-content-between align-items-center mb-3">
+        <!-- 🔹 Acciones rápidas -->
+        <div class="acciones" style="margin-bottom: 15px;">
+            {% if tiene_permiso('insumos.crear') %}
+                <a href="{{ url_for('insumos.nuevo_insumo') }}" class="btn btn-primary">➕ Nuevo insumo</a>
+            {% endif %}
+            {% if tiene_permiso('categoria.ver') %}
+                <a href="{{ url_for('categorias.index') }}" class="btn btn-secondary">⚙️ Categorías</a>
+            {% endif %}
+            {% if tiene_permiso('variedad.ver') %}
+                <a href="{{ url_for('variedades.index') }}" class="btn btn-secondary">🌱 Variedades</a>
+            {% endif %}        
+            
+        </div>
+        <!-- Lado izquierdo: Reporte -->
+        <div class="form-row-busqueda">
+            <!-- Buscador rápido -->
+            <div class="form-group">
+                <label for="buscarInsumo">Buscar (nombre o código)</label>
+                <input type="text" id="buscarInsumo" class="form-control" placeholder="Ingrese nombre o código...">
+            </div>
+            <div class="form-group">
+                {% if tiene_permiso('insumos.ver') %}
+                    <a href="{{ url_for('reportes.vista_reporte_insumos') }}" class="btn btn-secondary me-2">📊 Ver Reporte
+                    </a>
+                {% endif %}
+                {% if tiene_permiso('stock.ver') %}
+                        <a href="{{ url_for('reportes.stock_bajo') }}" class="btn btn-secondary me-2">⚠️ Stock Bajo</a>
+                   
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    
+
+    <table cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Stock</th>
+                <th>Unidad</th>
+                <th>Ingreso</th>
+                <th>Vencimiento</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tablaInsumosBody">
+            {% include 'insumos/_tabla_insumos.html' %}
+        </tbody>
+    </table>
+
+    <!-- URL generada en servidor para usar en JS -->
+    <script src="{{ url_for('static', filename='js/insumos_list.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado de Categorías{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Listado de Categorías</h2>
+    <div class="acciones" style="display: flex; gap: 560px; margin-bottom: 15px;">
+        {% if tiene_permiso('insumos.cat_crear') %}
+            <a href="{{ url_for('categorias.nueva_categoria') }}" class="btn">➕ Nueva Categoría</a>
+        {% endif %}
+        
+        <a href="{{ url_for('insumos.index') }}" class="btn btn-secondary">↩️ Volver a Insumos</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cat in categorias %}
+            <tr>
+                <td>{{ cat.id_categoria }}</td>
+                <td>{{ cat.codigo_categoria }}</td>
+                <td>{{ cat.nombre_categoria }}</td>
+                <td>
+                    {% if tiene_permiso('insumos.cat_editar') %}
+                        <a href="{{ url_for('categorias.editar_categoria', id_categoria=cat.id_categoria) }}">✏️ Editar</a>
+                    {% endif %}
+
+                    {% if tiene_permiso('insumos.cat_eliminar') %}
+                        <a href="{{ url_for('categorias.eliminar_categoria_route', id_categoria=cat.id_categoria) }}" onclick="return confirm('¿Seguro que deseas eliminar esta categoría?')">🗑️ Eliminar</a>
+                    {% endif %}                    
+                    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

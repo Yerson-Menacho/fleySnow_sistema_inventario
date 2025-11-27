@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Recepción de Materia Prima</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+
+<div class="container mt-4" id="reporteRecepcion">
+
+    <!-- 🏢 CABECERA EMPRESARIAL -->
+    <div class="form-row_fila2">
+        <div class="form-group">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" style="height: 70px;">
+        </div>
+        <div class="form-group">
+            <h4 class="fw-bold text-success mb-1">FLEY & SNOW INTERNATIONAL PRODUCE E.I.R.L.</h4>
+            <p class="mb-0 small text-muted">RUC: 20610415726<br>Dirección: Otr. Sector Conchuc Lote 7, Caraz, Huaylas, Áncash, Perú</p>
+        </div>
+    </div>        
+
+    <!-- 📋 ENCABEZADO DEL REPORTE -->
+    <h2 class="fw-bold mb-0">📄 Nota de Recepción</h2>
+    <div class="form-row-cuatro">
+        <div class="form-group"><p><strong>Código: </strong>{{ cabecera.codigo_recepcion }}</p></div>
+        <div class="form-group"><p><strong>Fecha: </strong>{{ cabecera.fecha_recepcion.strftime('%Y-%m-%d') }}</p></div>
+        <div class="form-group"><p><strong>Hora: </strong>
+            {% if cabecera.hora_recepcion %}
+                {% set segundos = cabecera.hora_recepcion.total_seconds() %}
+                {{ "%02d:%02d"|format(segundos // 3600, (segundos // 60) % 60) }}
+            {% endif %}</p></div>
+        <div class="form-group"><p><strong>Responsable:</strong> {{ cabecera.responsable or '—' }}</p></div>
+    </div>
+
+    <!-- DATOS PRINCIPALES -->
+    <div class="form-row4">
+        <div class="form-group"><p><strong>Agricultor:</strong> {{ cabecera.agricultor or '—' }}</p></div>    
+        <div class="form-group"><p><strong>Código Nota de Salida:</strong> {{ cabecera.codigo_nota or '—' }}</p></div>           
+    </div>
+
+    <!-- OBSERVACIONES -->
+    <div class="form-row-ob">  
+        <div class="form-group"><p><strong>Observaciones: </strong>{{ cabecera.observaciones or '—' }}</p></div> 
+        <div class="form-group"><p><strong>Estado: </strong>
+            {% if cabecera.estado|lower == 'pendiente' %}
+                <span class="badge bg-warning text-dark">Pendiente</span>
+            {% elif cabecera.estado|lower == 'aprobado' %}
+                <span class="badge bg-success">Aprobado</span>
+            {% elif cabecera.estado|lower == 'anulado' %}
+                <span class="badge bg-danger">Anulado</span>
+            {% else %}
+                <span class="badge bg-secondary">{{ cabecera.estado }}</span>
+            {% endif %}
+        </p></div>
+    </div>
+
+    <!-- DETALLE DE RECEPCIÓN -->
+    <h3 class="border-bottom pb-2 text-center">📦 Detalle de Recepción</h3>
+    <table id="tabla-recepcion" class="table table-striped table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Variedad</th>
+                <th>Lote</th>
+                <th>Peso Bruto</th>
+                <th>Jabas</th>
+                <th>Peso Neto</th>
+                <th>Unidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in detalles %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ d.nombre_variedad }}</td>
+                <td>{{ d.lote }}</td>
+                <td>{{ d.peso_bruto }}</td>
+                <td>{{ d.cantidad_jabas }}</td>
+                <td>{{ d.peso_neto }}</td>
+                <td>{{ d.unidad_medida }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="text-center text-muted">No hay detalles registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>    
+
+    <!-- FIRMAS -->
+    <div class="form-row-firma">
+        <div class="form-group"><p>________________________________</p>
+            <p><strong>{{ cabecera.agricultor or 'Agricultor' }}</strong></p>
+            <p><small>Firma y Sello</small></p>
+        </div>
+        
+        <div class="form-group"><p>________________________________</p>
+            <p><strong>{{ cabecera.responsable or 'Responsable' }}</strong></p>
+            <p><small>Firma y Sello</small></p>
+        </div>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="form-group mt-4 d-print-none">
+        <button class="btn btn-primary me-2" onclick="window.print()">🖨️ Imprimir</button>
+        <a href="{{ url_for('recepcion.index') }}" class="btn btn-secondary">⬅️ Volver</a>
+    </div>
+
+</div>
+
+</body>
+</html>
+
+<!-- 🔸 ESTILOS DE IMPRESIÓN -->
+<style>
+    @media print {
+        .d-print-none { display: none !important; }
+        body {
+            background: white !important;
+            color: black;
+            margin: 0;
+            font-size: 11pt;
+        }
+        table {
+            border-collapse: collapse !important;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #000 !important;
+            padding: 6px;
+        }
+        h3 {
+            color: black !important;
+        }
+    }
+</style>

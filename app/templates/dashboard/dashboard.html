@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+<div class="dashboard-container">
+
+    <div class="dashboard-header text-center mb-4">
+        <h2>👋 Bienvenido 
+            {{ session['nombre'] if session['nombre'] else 'Usuario' }}
+        </h2>
+        <h3>📊 Panel de Control — Inventario</h3>
+    </div>
+
+    <!-- ======== MÉTRICAS PRINCIPALES ======== -->
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="metric-card">
+                <small>Total de Insumos</small>
+                <h4>{{ total_insumos }}</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="metric-card">
+                <small>Insumos con stock bajo</small>
+                <h4>{{ insumos_bajo }}</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="metric-card">
+                <small>Alertas pendientes</small>
+                <h4>{{ alertas_pendientes }}</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="metric-card">
+                <small>Recepciones este mes</small>
+                <h4>{{ recepciones_mes }}</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== GRÁFICOS ======== -->
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <h6>Stock por Categoría</h6>
+                <canvas id="chartCategorias"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <h6>Entradas vs Salidas (últimos 30 días)</h6>
+                <canvas id="chartEntradasSalidas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <h6>Peso neto por Variedad (últimos 30 días)</h6>
+                <canvas id="chartVariedades"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <h6>Actividad del sistema (últimos 30 días)</h6>
+                <canvas id="chartActividad"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== LISTAS ======== -->
+    <div class="row mt-4">
+
+        <div class="col-lg-6">
+            <div class="list-card">
+                <h6>Top Agricultores (peso neto)</h6>
+                <ul class="list-group">
+                    {% for a in top_agricultores %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ a.nombre }} <span class="badge bg-primary">{{ a.peso }}</span>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-muted">No hay datos</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="list-card">
+                <h6>Agricultores con jabas pendientes</h6>
+                <ul class="list-group">
+                    {% for a in agri_pendientes %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        {{ a.nombre }} <span class="badge bg-danger">{{ a.pendientes }}</span>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-muted">No hay datos</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ======== ACTIVIDAD Y MOVIMIENTOS ======== -->
+    <div class="row mt-4">
+
+        <div class="col-lg-6">
+            <div class="list-card">
+                <h6>Últimas Actividades</h6>
+
+                {% for la in ultimas_actividades %}
+                <div class="activity-item">
+                    <strong>{{ la.usuario or 'Sistema' }}</strong>
+                    <div>{{ la.accion }} — {{ la.descripcion }}</div>
+                    <small>{{ la.fecha }}</small>
+                </div>
+                {% else %}
+                <div class="activity-item text-muted">No hay actividades</div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="table-card">
+                <h6>Últimos Movimientos</h6>
+
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Insumo</th>
+                            <th>Tipo</th>
+                            <th>Cant</th>
+                            <th>Usuario</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for m in ultimos_movimientos %}
+                        <tr>
+                            <td>{{ m.fecha }}</td>
+                            <td>{{ m.insumo }}</td>
+                            <td>{{ m.tipo }}</td>
+                            <td>{{ m.cantidad }}</td>
+                            <td>{{ m.usuario }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5" class="text-muted">No hay movimientos</td></tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Datos enviados desde Flask a JS -->
+<script>
+    window.DASHBOARD = {
+        categoriasLabels: {{ categorias_labels|default([])|tojson }},
+        categoriasData: {{ categorias_data|default([])|tojson }},
+        esLabels: {{ es_labels|default([])|tojson }},
+        esEntradas: {{ es_entradas|default([])|tojson }},
+        esSalidas: {{ es_salidas|default([])|tojson }},
+        varLabels: {{ variedad_labels|default([])|tojson }},
+        varData: {{ variedad_data|default([])|tojson }},
+        actividadLabels: {{ actividad_labels|default([])|tojson }},
+        actividadData: {{ actividad_data|default([])|tojson }}
+    };
+</script>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

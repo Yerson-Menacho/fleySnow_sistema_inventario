@@ -1,0 +1,40 @@
+{% for u in usuarios %}
+<tr>
+    <td>{{ u.id_usuario }}</td>
+    <td>{{ u.nombre_completo }}</td>
+    <td>{{ u.dni }}</td>
+    <td>{{ u.email }}</td>
+    <td>{{ u.telefono or '—' }}</td>
+    <td>{{ u.nombre_rol }}</td>
+    <td>
+        {% if u.estado == 1 %}
+            <span class="badge bg-success">Activo</span>
+        {% else %}
+            <span class="badge bg-danger">Inactivo</span>
+        {% endif %}
+    </td>
+    <td>{{ u.fecha_creacion.strftime('%Y-%m-%d') }}</td>
+    <td class="nowrap">
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                ⚙️ Acciones
+            </button>
+            <ul class="dropdown-menu">
+                {% if tiene_permiso('usuarios.editar') %}
+                    <li><a class="dropdown-item" href="{{ url_for('usuarios.editar_usuario', id_usuario=u.id_usuario) }}">✏️ Editar</a></li>
+                {% endif %}
+
+                {% if tiene_permiso('usuarios.cambiar_pass') %}
+                    <li><a class="dropdown-item" href="{{ url_for('usuarios.cambiar_password', id_usuario=u.id_usuario) }}">🔑 Editar PIN</a></li>
+                {% endif %}
+
+                {% if u.nombre_rol != "Administrador" and tiene_permiso('permisos.asignar') %}
+                    <li><a class="dropdown-item" href="{{ url_for('permisos.gestionar', id_usuario=u.id_usuario) }}">🛡️ Gestionar permisos</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </td>
+</tr>
+{% else %}
+<tr><td colspan="9" class="text-center">No hay usuarios registrados.</td></tr>
+{% endfor %}

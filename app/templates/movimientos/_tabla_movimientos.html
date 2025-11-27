@@ -1,0 +1,53 @@
+{% for n in movimientos %}
+<tr>
+    <td>{{ n.id_nota }}</td>
+    <td><span class="badge bg-primary">{{ n.codigo_nota }}</span></td>
+    <td>
+        {% set tipo = n.tipo_movimiento|lower %}
+        {% if tipo == 'entrada' %}
+            <span class="badge bg-success">Entrada</span>
+        {% elif tipo == 'salida' %}
+            <span class="badge bg-danger">Salida</span>
+        {% elif tipo == 'ajuste' %}
+            <span class="badge bg-warning text-dark">Ajuste</span>
+        {% elif tipo == 'baja' %}
+            <span class="badge bg-dark">Baja</span>
+        {% elif tipo in ['devolución','devolucion'] %}
+            <span class="badge bg-info text-dark">Devolución</span>
+        {% else %}
+            <span class="badge bg-secondary">{{ n.tipo_movimiento }}</span>
+        {% endif %}
+    </td>
+    <td>{{ n.fecha.strftime("%Y-%m-%d") if n.fecha else '—' }}</td>
+    <td>{{ n.origen_destino or '—' }}</td>
+    <td>{{ n.usuario or '—' }}</td>
+    <td>
+        {% if n.estado %}
+            {% if n.estado|lower == "pendiente" %}
+                <span class="badge bg-warning text-dark">Pendiente</span>
+            {% elif n.estado|lower == "aprobado" %}
+                <span class="badge bg-success">Aprobado</span>
+            {% elif n.estado|lower == "anulado" %}
+                <span class="badge bg-danger">Anulado</span>
+            {% else %}
+                <span class="badge bg-secondary">{{ n.estado }}</span>
+            {% endif %}
+        {% else %}
+            —
+        {% endif %}
+    </td>
+    <td>{{ n.observacion or '—' }}</td>
+    <td class="nowrap">
+        <a href="{{ url_for('movimientos.ver_detalle', id_nota=n.id_nota) }}" class="btn btn-sm btn-info">🔍Ver</a>
+        {% if tiene_permiso('movimientos.editar') and n.estado|lower == "pendiente" %}
+            <a href="{{ url_for('movimientos.actualizar_nota_movimiento_route', id_nota=n.id_nota) }}" class="btn btn-sm btn-warning">✏️ Editar</a>
+            <button type="button" class="btn btn-sm btn-primary btn-cambiar-estado" data-id="{{ n.id_nota }}" data-estado="{{ n.estado }}">🔄Estado</button>
+        {% endif %}
+        <a href="{{ url_for('movimientos.reporte_movimiento', id_nota=n.id_nota) }}" target="_blank" class="btn btn-sm btn-secondary" title="Imprimir Nota"> 🖨️ </a>
+    </td>
+</tr>
+{% else %}
+<tr>
+    <td colspan="9" class="text-center">No se encontraron resultados.</td>
+</tr>
+{% endfor %}

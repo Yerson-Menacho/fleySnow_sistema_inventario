@@ -1,0 +1,50 @@
+{% for insumo in insumos %}
+<tr>
+    <td>{{ insumo.id_insumo }}</td>
+    <td>{{ insumo.codigo_insumo }}</td>
+    <td>{{ insumo.nombre_insumo }}</td>
+    <td>{{ insumo.stock_actual }}</td>
+    <td>{{ insumo.unidad_medida }}</td>
+    <td>{{ insumo.fecha_ingreso }}</td>
+    <td>{{ insumo.fecha_vencimiento or 'N/A' }}</td>
+    <td>
+        {% if insumo.estado %}
+            <span class="badge bg-success">Activo</span>
+        {% else %}
+            <span class="badge bg-danger">Inactivo</span>
+        {% endif %}
+    </td>
+    <td class="nowrap">
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                ⚙️ Acciones
+            </button>
+            <ul class="dropdown-menu">
+                {% if session.get('id_rol') == 1 or tiene_permiso('insumos.editar') %}
+                    <li>
+                        <a class="dropdown-item" href="{{ url_for('insumos.editar_insumo', id_insumo=insumo.id_insumo) }}">✏️ Editar</a>
+                    </li>
+                {% endif %}
+
+                {% if insumo.estado == 'Activo' %}
+                    {% if session.get('id_rol') == 1 or tiene_permiso('insumos.desactivar') %}
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('insumos.desactivar_insumo', id_insumo=insumo.id_insumo) }}">🚫 Desactivar</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    {% if session.get('id_rol') == 1 or tiene_permiso('insumos.activar') %}
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('insumos.activar_insumo', id_insumo=insumo.id_insumo) }}">✅ Activar</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </div>
+    </td>
+</tr>
+{% else %}
+<tr>
+    <td colspan="9" class="text-center">No se encontraron insumos.</td>
+</tr>
+{% endfor %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle Agricultor{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>👩‍🌾 Detalle del Agricultor</h2>
+
+    <table>
+        <tr><th>ID</th><td>{{ agricultor.id_agricultor }}</td></tr>
+        <tr><th>Código</th><td>{{ agricultor.codigo_agricultor }}</td></tr>
+        <tr><th>DNI</th><td>{{ agricultor.dni }}</td></tr>
+        <tr><th>Nombres</th><td>{{ agricultor.nombres }}</td></tr>
+        <tr><th>Apellidos</th><td>{{ agricultor.apellidos }}</td></tr>
+        <tr><th>Teléfono</th><td>{{ agricultor.telefono }}</td></tr>
+        <tr><th>Dirección</th><td>{{ agricultor.direccion }}</td></tr>
+        <tr><th>Correo</th><td>{{ agricultor.correo }}</td></tr>
+        <tr><th>Zona</th><td>{{ agricultor.zona }}</td></tr>
+        <tr><th>Fecha de Registro</th><td>{{ agricultor.fecha_registro.strftime('%d/%m/%Y') if agricultor.fecha_registro else '-' }}</td></tr>
+        <tr><th>Cultivo Principal</th><td>{{ agricultor.cultivo_principal }}</td></tr>
+        <tr><th>Estado</th><td>{{ '✅ Activo' if agricultor.estado == 1 else '❌ Inactivo' }}</td></tr>
+    </table>
+
+    <div class="acciones" style="margin-top: 15px;">
+        <a href="{{ url_for('agricultores.index') }}" class="btn btn-secondary">↩️ Volver</a>
+        {% if tiene_permiso('agricultores.editar') %}
+            <a href="{{ url_for('agricultores.editar_agricultor', id_agricultor=agricultor.id_agricultor) }}" class="btn btn-primary">✏️ Editar</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

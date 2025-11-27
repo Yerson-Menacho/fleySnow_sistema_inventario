@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Reporte - Stock Bajo{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-row">
+        <h2>⚠️ Insumos con Stock Bajo</h2>
+    </div>
+
+    <table cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Insumo</th>
+                <th>Stock Actual</th>
+                <th>Stock Mínimo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in insumos %}
+            <tr class="table-danger">
+                <td>{{ i.codigo_insumo }}</td>
+                <td>{{ i.nombre_insumo }}</td>
+                <td>{{ i.stock_actual }}</td>
+                <td>{{ i.stock_minimo }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align:center;">✅ Todos los insumos tienen stock suficiente.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Editar Recepción de Materia Prima{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>✏️ Editar Recepción de Materia Prima
+        <span class="badge bg-primary">{{ recepcion.codigo_recepcion }}</span>
+    </h2>
+    <div class="header-row">
+        <a href="{{ url_for('recepcion.index') }}" class="btn btn-secondary">↩️ Volver</a>
+    </div>
+
+    {% set editable = recepcion.estado == 'pendiente' %}
+
+    <form method="POST" id="recepcionForm">
+        <!-- CABECERA -->
+        <div class="form-row2">
+            <div class="form-group">
+                <label for="id_agricultor">Agricultor</label>
+                <select id="id_agricultor" name="id_agricultor" class="form-control" {% if not editable %}disabled{% endif %} required>
+                    {% for a in agricultores %}
+                        <option value="{{ a.id_agricultor }}" {% if a.id_agricultor == recepcion.id_agricultor %}selected{% endif %}>
+                            {{ a.nombre_completo }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>      
+
+            <div class="form-group">
+                <label for="id_nota_salida">Nota de Salida Vinculada</label>
+                <select id="id_nota_salida" name="id_nota_salida" class="form-control" style="width:100%" {% if not editable %}disabled{% endif %} required>
+                    <!-- Se llenará dinámicamente con JS -->
+                </select>
+            </div>  
+
+            <div class="form-group">
+                <label for="fecha_recepcion">Fecha</label>
+                <input type="date" id="fecha_recepcion" name="fecha_recepcion" class="form-control"
+                       value="{{ recepcion.fecha_recepcion.strftime('%Y-%m-%d') if recepcion.fecha_recepcion else '' }}"
+                       {% if not editable %}readonly{% endif %} required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_responsable">Responsable</label>
+                <input type="text" class="form-control" value="{{ recepcion.responsable }}" readonly>
+                <input type="hidden" name="id_responsable" value="{{ recepcion.id_responsable }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="observacion">Observaciones</label>
+            <input type="text" id="observacion" name="observacion" class="form-control" maxlength="150" value="{{recepcion.observaciones or '' }}">
+        </div>
+
+        <!-- DETALLES -->
+        <h5>📋 Detalles de Recepción</h5>
+        <table class="table table-bordered" id="tablaDetalles">
+            <thead class="table-dark">
+                <tr>
+                    <th>Variedad</th>
+                    <th>Lote</th>
+                    <th>Peso Bruto</th>
+                    <th>Jabas</th>
+                    <th>Unidad</th>
+                    {% if editable %}
+                    <th>Acción</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in detalles %}
+                <tr data-id-detalle="{{ d.id_detalle }}" data-estado="existente">
+                    <td data-id="{{ d.id_variedad }}">{{ d.nombre_variedad }}</td>
+                    <td>{{ d.lote }}</td>
+                    <td>{{ d.peso_bruto }}</td>
+                    <td>{{ d.cantidad_jabas }}</td>
+                    <td>{{ d.unidad_medida }}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-primary editarDetalle">✏️</button>
+                        <button type="button" class="btn btn-sm btn-danger eliminarDetalle">🗑️</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if editable %}
+        <button type="button" class="btn btn-primary" id="abrirModalDetalle">➕ Agregar detalle</button>
+        <input type="hidden" name="detalles" id="detallesInput">
+        {% endif %}
+
+        <div class="d-flex justify-content-end mt-3">
+            {% if editable %}
+                <button type="submit" class="btn btn-success">💾 Guardar cambios</button>
+            {% endif %}
+            <a href="{{ url_for('recepcion.index') }}" class="btn btn-warning">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<!-- MODAL (solo si editable) -->
+{% if editable %}
+<div id="modalDetalle" class="modal-overlay" style="display:none;">
+    <div class="modal-window">
+        <div class="form-group">
+            <label for="modal_variedad">Variedad</label>
+            <select id="id_variedad" name="id_variedad" class="form-control" required>
+                {% for v in variedades %}
+                    <option value="{{ v.id_variedad }}">{{ v.nombre_variedad }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-row4">
+            <div class="form-group">
+                <label for="modal_lote">Lote</label>
+                <input type="text" id="modal_lote" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="modal_peso">Peso Bruto</label>
+                <input type="number" id="modal_peso" class="form-control" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="modal_jabas">Jabas</label>
+                <input type="number" id="modal_jabas" class="form-control" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="modal_unidad">Unidad</label>
+                <select id="modal_unidad" class="form-control">
+                    <option value="kg">KG</option>
+                    <option value="lb">LB</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" id="guardarDetalle" class="btn btn-success">Agregar</button>
+            <button type="button" id="cerrarModal" class="btn btn-secondary">Cancelar</button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if editable %}
+<script src="{{ url_for('static', filename='js/recepcion.js') }}"></script>
+{% endif %}
+{% endblock %}

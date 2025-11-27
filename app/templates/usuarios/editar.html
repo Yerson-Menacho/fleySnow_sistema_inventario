@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Usuario{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-row">
+        <h2>Editar Usuario</h2>
+        <div class="acciones">
+            <a href="{{ url_for('usuarios.index') }}" class="btn btn-secondary">↩️ Volver</a>
+        </div>
+    </div>
+
+    <form method="POST">
+        <div class="form-row1">
+            <div class="form-group">
+                <label for="dni">DNI</label>
+                <input type="text" id="dni" name="dni" class="form-control"
+                       value="{{ usuario.dni }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="nombre_completo">Nombre completo</label>
+                <input type="text" id="nombre_completo" name="nombre_completo" class="form-control"
+                       value="{{ usuario.nombre_completo }}" required>
+            </div>
+        </div>
+
+        <div class="form-row1">
+            <div class="form-group">
+                <label for="email">Correo</label>
+                <input type="email" id="email" name="email" class="form-control"
+                       value="{{ usuario.email }}" required>
+            </div>
+            <div class="form-group">
+                <label for="telefono">Teléfono</label>
+                <input type="text" id="telefono" name="telefono" class="form-control"
+                       value="{{ usuario.telefono or '' }}"
+                       minlength="9" maxlength="9" pattern="[0-9]{9}" 
+                       title="El teléfono debe tener exactamente 9 números">
+            </div>
+            <div class="form-group">
+                <label for="id_rol">Rol</label>
+                <select id="id_rol" name="id_rol" class="form-control" required>
+                    {% for r in roles %}
+                        <option value="{{ r.id_rol }}" {% if usuario.id_rol == r.id_rol %}selected{% endif %}>
+                            {{ r.nombre_rol }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row1">
+            <div class="form-group">
+                <label for="estado">Estado</label>
+                <select id="estado" name="estado" class="form-control">
+                    <option value="1" {% if usuario.estado == 1 %}selected{% endif %}>Activo</option>
+                    <option value="0" {% if usuario.estado == 0 %}selected{% endif %}>Inactivo</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <a href="{{ url_for('usuarios.index') }}" class="btn btn-warning">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

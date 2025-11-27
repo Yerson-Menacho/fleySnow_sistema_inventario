@@ -1,0 +1,70 @@
+{% for rec in recepciones %}
+    <tr>
+        <td>{{ loop.index }}</td>
+
+        <!-- Código Recepción -->
+        <td><span class="badge bg-primary">{{ rec.codigo_recepcion }}</span></td>
+
+        <!-- Agricultor -->
+        <td>{{ rec.agricultor or '—' }}</td>
+
+        <!-- Fecha -->
+        <td>{{ rec.fecha_recepcion.strftime("%Y-%m-%d") if rec.fecha_recepcion else '—' }}</td>
+
+        <!-- Totales -->
+        <td>{{ rec.peso_bruto_total|round(2) }}</td>
+        <td>{{ rec.jabas_entregadas }}</td>
+        <td>{{ rec.peso_neto_total|round(2) }}</td>
+        <td>
+            {% if rec.saldo_jabas > 0 %}
+                <span class="badge bg-danger">{{ rec.saldo_jabas }}</span>
+            {% elif rec.saldo_jabas < 0 %}
+                <span class="badge bg-warning text-dark">{{ rec.saldo_jabas }}</span>
+            {% else %}
+                <span class="badge bg-success">{{ rec.saldo_jabas }}</span>
+            {% endif %}
+        </td>
+
+        <!-- Estado -->
+        <td>
+            {% if rec.estado %}
+                {% set estado = rec.estado|lower %}
+                {% if estado == "pendiente" %}
+                    <span class="badge bg-warning text-dark">Pendiente</span>
+                {% elif estado == "aprobado" %}
+                    <span class="badge bg-success">Aprobado</span>
+                {% elif estado == "anulado" %}
+                    <span class="badge bg-danger">Anulado</span>
+                {% else %}
+                    <span class="badge bg-secondary">{{ rec.estado }}</span>
+                {% endif %}
+            {% else %}
+                —
+            {% endif %}
+        </td>
+
+        <!-- Acciones -->
+        <td class="nowrap">
+            {% if tiene_permiso('recepcion.ver') %}
+                <a href="{{ url_for('recepcion.ver_detalle_recepcion', id_recepcion=rec.id_recepcion) }}" class="btn btn-sm btn-info" title="Ver detalle">🔍 Ver</a>
+            {% endif %}
+
+            {% if tiene_permiso('recepcion.editar') and rec.estado|lower not in ['anulado', 'aprobado'] %}
+                <a href="{{ url_for('recepcion.editar_recepcion', id_recepcion=rec.id_recepcion) }}" class="btn btn-sm btn-warning" title="Editar">✏️ Editar</a>
+            {% endif %}
+
+            {% if tiene_permiso('recepcion.anular') and rec.estado|lower not in ['anulado', 'aprobado'] %}
+                <button type="button" class="btn btn-sm btn-primary btn-cambiar-estado" data-id="{{ rec.id_recepcion }}" data-estado="{{ rec.estado }}">🔄 Estado</button>
+            {% endif %}
+
+            <a href="{{ url_for('recepcion.reporte_recepcion', id_recepcion=rec.id_recepcion) }}" target="_blank" class="btn btn-sm btn-secondary" title="Imprimir Nota">🖨️</a>
+        </td>
+
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="10" class="text-center text-muted py-4">
+            No hay recepciones registradas.
+        </td>
+    </tr>
+{% endfor %}

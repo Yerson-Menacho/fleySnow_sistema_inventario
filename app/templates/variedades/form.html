@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ 'Editar Variedad' if variedad else 'Nueva Variedad' }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ 'Editar Variedad' if variedad else 'Nueva Variedad' }}</h2>
+    <form method="POST">
+        <!-- Código + Nombre -->
+        <div class="form-row">
+            <div class="form-group small">
+                <label for="codigo_variedad">Código</label>
+                <input type="text" id="codigo_variedad" name="codigo_variedad" class="form-control"
+                    maxlength="5"
+                    value="{{ variedad.codigo_variedad if variedad else '' }}"
+                    {% if variedad %}readonly{% endif %} required>
+            </div>
+            <div class="form-group">
+                <label for="nombre_insumo">Nombre</label>
+                <input type="text" id="nombre_variedad" name="nombre_variedad"
+                   class="form-control"
+                   value="{{ variedad.nombre_variedad if variedad else '' }}" required>
+            </div>
+            
+            <div class="form-group">
+            <label for="id_categoria">Categoría</label>
+            <select id="id_categoria" name="id_categoria" class="form-control" required>
+                <option value="">-- Selecciona una categoría --</option>
+                {% for cat in categorias %}
+                    <option value="{{ cat.id_categoria }}"
+                        {% if variedad and variedad.id_categoria == cat.id_categoria %}selected{% endif %}>
+                        {{ cat.nombre_categoria }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        </div>
+        
+
+        <button type="submit" class="btn">{{ 'Actualizar' if variedad else 'Guardar' }}</button>
+        <a href="{{ url_for('variedades.index') }}" class="btn btn-warning">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

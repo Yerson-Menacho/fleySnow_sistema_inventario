@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ 'Editar Agricultor' if agricultor else 'Nuevo Agricultor' }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ '✏️ Editar Agricultor' if agricultor else '➕ Nuevo Agricultor' }}</h2>
+
+    <form method="POST">
+        <div class="form-row2">
+            <div class="form-group2">
+                <label for="codigo_agricultor">Código (máx 5)</label>
+                <input type="text" name="codigo_agricultor" id="codigo_agricultor" class="form-control"
+                    value="{{ agricultor.codigo_agricultor if agricultor else '' }}" required maxlength="5">
+            </div>
+
+            <div class="form-group2">
+                <label for="dni">DNI (8 dígitos)</label>
+                <input type="text" name="dni" id="dni" class="form-control"
+                    value="{{ agricultor.dni if agricultor else '' }}" required maxlength="8">
+            </div>
+            <div class="form-group2">
+                <label for="nombres">Nombres</label>
+                <input type="text" name="nombres" id="nombres" class="form-control"
+                    value="{{ agricultor.nombres if agricultor else '' }}" required>
+            </div>
+
+            <div class="form-group2">
+                <label for="apellidos">Apellidos</label>
+                <input type="text" name="apellidos" id="apellidos" class="form-control"
+                    value="{{ agricultor.apellidos if agricultor else '' }}" required>
+            </div>            
+        </div>
+        
+        <div class="form-row1">
+            <div class="form-group1">
+                <label for="telefono">Teléfono (9 dígitos)</label>
+                <input type="text" name="telefono" id="telefono" class="form-control"
+                    value="{{ agricultor.telefono if agricultor else '' }}" maxlength="9">
+            </div>
+            <div class="form-group1">
+                <label for="correo">Correo</label>
+                <input type="email" name="correo" id="correo" class="form-control"
+                    value="{{ agricultor.correo if agricultor else '' }}">
+            </div>
+            <div class="form-group1">
+                <label for="direccion">Dirección</label>
+                <input type="text" name="direccion" id="direccion" class="form-control"
+                    value="{{ agricultor.direccion if agricultor else '' }}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="zona">Zona</label>
+                <input type="text" name="zona" id="zona" class="form-control"
+                    value="{{ agricultor.zona if agricultor else '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="cultivo_principal">Cultivo Principal</label>
+                <input type="text" name="cultivo_principal" id="cultivo_principal" class="form-control"
+                    value="{{ agricultor.cultivo_principal if agricultor else '' }}">
+            </div>
+        </div>
+
+        {% if agricultor %}
+        <div class="form-group">
+            <label for="estado">Estado</label>
+            <select name="estado" id="estado" class="form-control">
+                <option value="1" {% if agricultor.estado == 1 %}selected{% endif %}>Activo</option>
+                <option value="0" {% if agricultor.estado == 0 %}selected{% endif %}>Inactivo</option>
+            </select>
+        </div>
+        {% endif %}
+
+        <div class="acciones" style="margin-top: 15px;">
+            <button type="submit" class="btn btn-primary">💾 Guardar</button>
+            <a href="{{ url_for('agricultores.index') }}" class="btn btn-secondary">↩️ Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

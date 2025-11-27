@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Detalle de Recepción{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>
+        📥 Detalle de Recepción 
+        <span class="badge bg-primary">{{ cabecera.codigo_recepcion }}</span>
+
+        {% if cabecera.estado %}
+            {% if cabecera.estado|lower == "pendiente" %}
+                <span class="badge bg-warning text-dark">Pendiente</span>
+            {% elif cabecera.estado|lower == "aprobado" %}
+                <span class="badge bg-success">Aprobado</span>
+            {% elif cabecera.estado|lower == "anulado" %}
+                <span class="badge bg-danger">Anulado</span>
+            {% else %}
+                <span class="badge bg-secondary">{{ cabecera.estado }}</span>
+            {% endif %}
+        {% endif %}
+    </h3>
+
+    <!-- Cabecera -->
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <p><strong>ID Recepción:</strong> {{ cabecera.id_recepcion }}</p>
+            <p><strong>Nota de Salida Vinculada:</strong> {{ cabecera.codigo_nota }}</p>
+            <p><strong>Fecha Recepción:</strong> {{ cabecera.fecha_recepcion }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Agricultor:</strong> {{ cabecera.agricultor }}</p>
+            <p><strong>Responsable:</strong> {{ cabecera.responsable }}</p>
+            <p><strong>Hora:</strong> {{ cabecera.hora_recepcion or '-' }}</p>
+        </div>
+    </div>
+
+    <p><strong>Observaciones:</strong> {{ cabecera.observaciones or '-' }}</p>    
+
+    <h4 class="mt-4">📦 Detalles de Recepción</h4>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Variedad</th>
+                <th>Lote</th>
+                <th>Peso Bruto</th>
+                <th>Jabas</th>
+                <th>Peso Neto</th>
+                <th>Unidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in detalles %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ d.nombre_variedad }}</td>
+                <td>{{ d.lote }}</td>
+                <td>{{ d.peso_bruto }}</td>
+                <td>{{ d.cantidad_jabas }}</td>
+                <td>{{ d.peso_neto }}</td>
+                <td>{{ d.unidad_medida }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">⚠️ No hay detalles registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mt-3">
+        <a href="{{ url_for('recepcion.index') }}" class="btn btn-secondary">⬅ Volver</a>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ 'Editar Insumo' if insumo else 'Nuevo Insumo' }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ 'Editar Insumo' if insumo else 'Nuevo Insumo' }}</h2>
+
+    <form method="POST">
+        <!-- Código + Nombre -->
+        <div class="form-row1">
+            <div class="form-group small">
+                <label for="codigo_insumo">Código</label>
+                <input type="text" id="codigo_insumo" name="codigo_insumo" class="form-control" maxlength="5"
+                value="{{ insumo.codigo_insumo if insumo else '' }}" {% if insumo %}readonly{% endif %} required>
+            </div>
+            <div class="form-group large">
+                <label for="nombre_insumo">Nombre</label>
+                <input type="text" id="nombre_insumo" name="nombre_insumo" class="form-control"
+                       value="{{ insumo.nombre_insumo if insumo else '' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="fecha_vencimiento">Fecha de Vencimiento/ opcional</label>
+                <input type="date" id="fecha_vencimiento" name="fecha_vencimiento" class="form-control"
+                       value="{{ insumo.fecha_vencimiento if insumo and insumo.fecha_vencimiento else '' }}">
+            </div>
+        </div>
+
+        <!-- Categoría + Variedad (dependiente) -->
+        <div class="form-row2">
+            <div class="form-group">
+                <label for="id_categoria">Categoría</label>
+                <select id="id_categoria" name="id_categoria" class="form-control" style="width:100%" required></select>
+            </div>
+
+            <div class="form-group">
+                <label for="id_variedad">Variedad</label>
+                <select id="id_variedad" name="id_variedad" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <label for="stock_actual">Stock</label>
+                <input type="number" id="stock_actual" name="stock_actual" class="form-control" min="0"
+                       value="{{ insumo.stock_actual if insumo else 0 }}">
+            </div>
+            <div class="form-group">
+                <label for="unidad_medida">Unidad</label>
+                <input type="text" id="unidad_medida" name="unidad_medida" class="form-control"
+                       value="{{ insumo.unidad_medida if insumo else '' }}" placeholder="kg, lt, unid...">
+            </div>
+        </div>
+
+        <!-- Descripción -->
+        <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <input id="descripcion" name="descripcion" class="form-control">{{ insumo.descripcion if insumo else '' }}</input>
+        </div>
+
+        <button type="submit" class="btn">{{ 'Actualizar' if insumo else 'Guardar' }}</button>
+        <a href="{{ url_for('insumos.index') }}" class="btn btn-warning">Cancelar</a>
+    </form>
+
+    <!-- Datos JSON que JS usará -->
+    <script type="application/json" id="all-variedades-data">
+        {{ variedades | tojson }}
+    </script>
+
+    <script type="application/json" id="current-variedad-data">
+        {{ (insumo.id_variedad if insumo and insumo.id_variedad else None) | tojson }}
+    </script>
+
+    <!-- Importar el archivo JS -->
+    <script src="{{ url_for('static', filename='js/insumos.js') }}"></script>
+
+</div>
+{% endblock %}
+

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Usuarios{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>👨‍💼 Listar Usuarios</h2>
+    <div class="header-row d-flex justify-content-between align-items-center mb-3">
+        <!-- Lado derecho: Nuevo Usuario -->
+        <div class="d-flex align-items-center">
+            {% if tiene_permiso('usuarios.crear') %}
+                <a href="{{ url_for('usuarios.nuevo_usuario') }}" class="btn btn-primary">➕ Nuevo Usuario</a>
+            {% endif %}
+        </div>
+
+        <!-- Lado izquierdo: Reporte -->
+        <div class="form-row-busqueda">  
+            <!-- Buscador rápido -->
+            <div class="form-group">
+                <label for="q">Buscar (nombre, DNI o código)</label>
+                <input type="text" id="q" name="q" class="form-control" placeholder="Ingrese Nombre, Codigo o DNI.....">
+            </div>
+            <div class="form-group">
+                {% if tiene_permiso('usuarios.ver') %}
+                    <a href="{{ url_for('reportes.vista_reporte_usuarios') }}" class="btn btn-secondary me-3">📊 Ver Reporte</a>
+                {% endif %}
+            </div>
+            
+        </div>
+
+        
+    </div>
+   
+    <div class="form-group">
+        
+        <table cellpadding="8" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre completo</th>
+                    <th>DNI</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Creación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in usuarios %}
+                <tr>
+                    <td>{{ u.id_usuario }}</td>
+                    <td>{{ u.nombre_completo }}</td>
+                    <td>{{ u.dni }}</td> 
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.telefono or '—' }}</td>
+                    <td>{{ u.nombre_rol }}</td>
+                    <td>
+                        {% if u.estado == 1 %}
+                            <span class="badge bg-success">Activo</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ (u.fecha_creacion|string)[:10] }}</td>
+                    <td class="nowrap">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            ⚙️ Acciones
+                            </button>
+                            <ul class="dropdown-menu">
+                            {% if tiene_permiso('usuarios.editar') %}
+                                <li><a class="dropdown-item" href="{{ url_for('usuarios.editar_usuario', id_usuario=u.id_usuario) }}">✏️ Editar</a></li>
+                            {% endif %}
+
+                            {% if tiene_permiso('usuarios.cambiar_pass') %}
+                                <li><a class="dropdown-item" href="{{ url_for('usuarios.cambiar_password', id_usuario=u.id_usuario) }}">🔑 Editar PIN</a></li>
+                            {% endif %}
+
+                            {% if u.nombre_rol != "Administrador" and tiene_permiso('permisos.asignar') %}
+                                <li><a class="dropdown-item" href="{{ url_for('permisos.gestionar', id_usuario=u.id_usuario) }}">🛡️ Gestionar permisos</a></li>
+                            {% endif %}
+                            </ul>
+                        </div>
+                    </td>                                       
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" style="text-align:center;">No hay usuarios registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

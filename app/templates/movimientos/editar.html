@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Nota de Movimiento{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-row">
+        <h2>✏️ Editar Nota de Movimiento 
+            <span class="badge bg-primary">{{ movimiento.codigo_nota }}</span>
+        </h2>
+        <div class="acciones">
+            <a href="{{ url_for('movimientos.index') }}" class="btn btn-secondary">↩️ Volver al listado</a>
+        </div>
+    </div>
+
+    <form method="POST" id="notaForm">
+        <!-- ===================== CABECERA ===================== -->
+        <div class="form-row2">
+            <div class="form-group">
+                <label for="id_tipo">Tipo de Nota</label>
+                <select id="id_tipo" name="id_tipo" class="form-control" required>
+                    <option value="">-- Selecciona --</option>
+                    {% for tipo in tipos_movimiento %}
+                        <option value="{{ tipo.id_tipo }}" {% if movimiento.id_tipo == tipo.id_tipo %}selected{% endif %}>
+                            {{ tipo.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group"> 
+                <label for="id_origen">Origen / Destino</label>
+                <select id="id_origen" name="id_origen" class="form-control" style="width:100%" required>
+                    <option value="{{ movimiento.id_origen }}">{{ movimiento.origen_destino }}</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha">Fecha</label>
+                <input type="date" id="fecha" name="fecha" class="form-control" 
+                       value="{{ (movimiento.fecha|string)[:10] }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="referencia">Referencia</label>
+                <input type="text" id="referencia" name="referencia" class="form-control" 
+                       maxlength="100" value="{{ movimiento.referencia or '' }}">
+            </div>
+        </div>
+            
+        <div class="form-group">
+            <label for="observacion">Observación</label>
+            <input type="text" id="observacion" name="observacion" class="form-control" 
+                   maxlength="150" value="{{ movimiento.observacion or '' }}">
+        </div>
+
+        <!-- ===================== DETALLES ===================== -->
+        <h5>Detalles de Movimientos</h5>
+        <table class="table table-bordered" id="detalleTabla">
+            <thead class="table-dark">
+                <tr>
+                    <th>Insumo</th>
+                    <th>Cantidad</th>
+                    <th>Unidad</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in detalles %}
+                <tr>
+                    <td data-id="{{ d.id_insumo }}">{{ d.nombre_insumo }}</td>
+                    <td>{{ d.cantidad }}</td>
+                    <td>{{ d.unidad_medida }}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-primary btn-sm editar">✏️</button>
+                        <button type="button" class="btn btn-danger btn-sm eliminar">🗑️</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="button" class="btn btn-primary mb-3" id="agregarFila">➕ Agregar insumo</button>
+
+        <!-- Hidden con detalles en JSON -->
+        <input type="hidden" name="detalles" id="detallesInput">
+
+        <!-- ===================== BOTONES ===================== -->
+        <button type="submit" class="btn btn-success">💾 Guardar Cambios</button>
+        <a href="{{ url_for('movimientos.index') }}" class="btn btn-warning">Cancelar</a>
+
+        <!-- ===================== MODAL ===================== -->
+        <div id="modalInsumo" class="modal-overlay" style="display:none;">
+            <div class="modal-window">
+                <div class="form-group">
+                    <label for="id_insumo">Insumo</label>
+                    <select id="insumo" style="width:100%"></select>
+                </div>
+
+                <div class="form-row4">
+                    <div class="form-group">
+                        <label for="modal_cantidad">Cantidad</label>
+                        <input type="number" id="modal_cantidad" class="form-control" step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal_unidad">Unidad</label>
+                        <select id="modal_unidad" class="form-control">
+                            <option value="">-- Selecciona --</option>
+                            <option value="kg">KG</option>
+                            <option value="lt">LT</option>
+                            <option value="und">UND</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" id="guardarInsumo" class="btn btn-success">Agregar</button>
+                    <button type="button" id="cerrarModal" class="btn btn-secondary">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<!-- JS externo -->
+<script src="{{ url_for('static', filename='js/movimientos.js') }}"></script>
+{% endblock %}

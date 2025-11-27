@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Reporte de Materia Prima{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>📊 Reporte de Materia Prima</h2>
+    <div>
+        <a href="{{ url_for('recepcion.index') }}" class="btn btn-secondary">↩️ Volver</a>
+    </div>
+
+    <!-- 🔹 Filtros -->
+    <div id="form-filtros" class="container mt-1">
+        <form method="POST" id="form-filtros">
+            <div class="form-row-materia-prima">
+                <div class="form-group">
+                    <label for="fecha_inicio" class="form-label">Desde</label>
+                    <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="fecha_fin" class="form-label">Hasta</label>
+                    <input type="date" id="fecha_fin" name="fecha_fin" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="id_agricultor" class="form-label">Agricultor</label>
+                    <select id="id_agricultor" name="id_agricultor" class="form-select"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_variedad" class="form-label">Variedad</label>
+                    <select id="id_variedad" name="id_variedad" class="form-select"></select>
+                </div>
+            </div>
+            
+            <div class="form-row-agrupar">
+                <div class="form-group">
+                    <label for="agrupacion" class="form-label">Agrupar por</label>
+                    <select id="agrupacion" name="agrupacion" class="form-select">
+                        <option value="dia">Día</option>
+                        <option value="semana">Semana</option>
+                        <option value="mes">Mes</option>
+                        <option value="variedad">Variedad</option>
+                    </select>
+                </div>
+
+                <div class="form-group"><br>
+                    <button type="submit" id="btn-buscar" class="btn btn-primary">🔍 Buscar</button>  
+                    <button type="button" id="btn-pdf" class="btn btn-danger ">📄 PDF</button>
+                    <button type="button" id="btn-excel" class="btn btn-success ">📊 Excel</button>
+                </div>
+            </div>
+            
+        </form>
+        
+    </div>
+
+    <!-- 🔹 Tabla -->
+    <table id="tabla-materia-prima" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>📅 Periodo</th>
+                <th>🌱 Variedad</th>
+                <th>⚖️ Peso Bruto Total (kg)</th>
+                <th>🧺 Cantidad de Jabas</th>
+                <th>⚖️ Peso Neto total (kg)</th>
+                <th>📦 N° Recepciones</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='JS/reporte_total_materia_prima.js') }}"></script>
+{% endblock %}

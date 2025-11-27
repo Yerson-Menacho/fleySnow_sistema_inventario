@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Nueva Recepción de Materia Prima{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>📥 Nueva Recepción de Materia Prima</h2>
+    <div class="header-row">        
+        <a href="{{ url_for('recepcion.index') }}" class="btn btn-secondary">↩️ Volver</a>
+    </div>
+
+    <form method="POST" id="recepcionForm">
+        <!-- ===================== CABECERA ===================== -->
+        <div class="form-row2">
+            <!-- Agricultor -->
+            <div class="form-group">
+                <label for="id_agricultor">Agricultor (buscar por código o nombre)</label>
+                <select id="id_agricultor" name="id_agricultor" class="form-control" style="width:100%" required></select>
+            </div>
+
+            <!-- Notas de salida -->
+            <div class="form-group">
+                <label for="id_nota_salida">Nota de Salida</label>
+                <select id="id_nota_salida" name="id_nota_salida" class="form-control" style="width:100%" required></select>
+                <!-- Aquí aparecerá el saldo pendiente dinámicamente -->
+            </div>
+
+            <!-- Fecha -->
+            <div class="form-group">
+                <label for="fecha_recepcion">Fecha</label>
+                <input type="date" id="fecha_recepcion" name="fecha_recepcion" class="form-control"
+                       value="{{ today }}" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="observacion">Observación</label>
+            <input type="text" id="observacion" name="observacion" class="form-control" maxlength="150" placeholder="Ej: Registe el estado o calidad de producto...">
+        </div>
+
+        <!-- ===================== DETALLES ===================== -->
+        <h5>📋 Detalles de Recepción</h5>
+        <table class="table table-bordered" id="tablaDetalles">
+            <thead class="table-dark">
+                <tr>
+                    <th>Variedad</th>
+                    <th>Lote</th>
+                    <th>Peso Bruto (kg)</th>
+                    <th>Jabas</th>
+                    <th>Unidad</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button type="button" class="btn btn-primary mb-3" id="abrirModalDetalle">➕ Agregar detalle</button>
+
+        <!-- Hidden para enviar todos los detalles -->
+        <input type="hidden" name="detalles" id="detallesInput">
+
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-success">💾 Guardar</button>
+            <a href="{{ url_for('recepcion.index') }}" class="btn btn-warning">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<!-- ===================== MODAL DETALLE ===================== -->
+<div id="modalDetalle" class="modal-overlay" style="display:none;">
+    <div class="modal-window">
+        <div class="form-group">
+            <label for="modal_variedad">Variedad</label>            
+            <select id="id_variedad" name="id_variedad" class="form-control" style="width:100%" required></select>
+        </div>
+
+        <div class="form-row4">
+            <div class="form-group">
+                <label for="modal_lote">Lote</label>
+                <input type="text" id="modal_lote" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="modal_peso">Peso Bruto (kg)</label>
+                <input type="number" id="modal_peso" class="form-control" step="0.01" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="modal_jabas">Jabas</label>
+                <input type="number" id="modal_jabas" class="form-control" min="1" step="1" required>
+            </div>
+            <div class="form-group">
+                <label for="modal_unidad">Unidad</label>
+                <select id="modal_unidad" class="form-control">
+                    <option value="kg">KG</option>
+                    <option value="lb">LB</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" id="guardarDetalle" class="btn btn-success">Agregar</button>
+            <button type="button" id="cerrarModal" class="btn btn-secondary">Cancelar</button>
+        </div>
+    </div>
+</div>
+<div id="saldo_pendiente" style="margin-top:5px; font-weight:bold; color:#0ae724;"></div>
+
+
+<script src="{{ url_for('static', filename='js/recepcion.js') }}"></script>
+{% endblock %}

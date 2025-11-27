@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Gestionar Permisos{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Gestionar permisos de {{ usuario.nombre_completo }}</h2>
+
+    <form method="POST">
+        <div class="row">
+            {% for modulo, acciones in acciones_por_modulo.items() %}
+            <div class="col-md-4 mb-3">  {# 🔹 cada módulo ocupa la mitad de la fila en pantallas medianas o más grandes #}
+                <div class="accordion" id="accordionModulo{{ loop.index }}">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ loop.index }}">
+                            <button class="accordion-button collapsed" type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#collapse{{ loop.index }}" 
+                                    aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+                                {{ modulo|capitalize }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" 
+                            aria-labelledby="heading{{ loop.index }}" 
+                            data-bs-parent="#accordionModulo{{ loop.index }}">
+                            <div class="accordion-body">
+                                <table class="table table-sm table-bordered align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Acción</th>
+                                            <th class="text-center">Permitir acceso</th>
+
+                                            <!-- <th>Código</th>
+                                            <th>Acción</th>
+                                            <th>Descripción</th> 
+                                            <th class="text-center">Permitido acceso</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for acc in acciones %}
+                                        <tr>
+                                            
+                                            <td>{{ acc.nombre_accion|replace("_", " ")|title }}</td>
+                                            <td class="text-center">
+                                                <input type="checkbox" name="acciones" value="{{ acc.codigo }}"
+                                                    {% if acc.codigo in permisos_codigos %}checked{% endif %}>
+                                            </td>
+
+                                            <!-- <td>{{ acc.codigo }}</td>
+                                            <td>{{ acc.nombre_accion|replace("_", " ")|title }}</td>
+                                            <td>{{ acc.descripcion }}</td>
+                                            <td class="text-center">
+                                                <input type="checkbox" name="acciones" value="{{ acc.codigo }}"
+                                                    {% if acc.codigo in permisos_codigos %}checked{% endif %}>
+                                            </td> -->
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-success">Guardar cambios</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

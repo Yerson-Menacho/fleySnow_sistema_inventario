@@ -1,0 +1,144 @@
+/* ============================================================
+   DASHBOARD MODERNO — TEMA PREMIUM (tipo AdminLTE v4)
+   Dark+Glass + Animaciones
+   ============================================================ */
+
+/* ----- Variables globales ----- */
+:root {
+    --primary: #4d8bf5;
+    --primary-light: #7aa8ff;
+    --danger: #f76c6c;
+    --success: #4ad991;
+    --warning: #f7d774;
+    --dark-bg: #121a15;
+    --dark-card: #0c4521; /*fondo del contenido*/
+    --dark-soft: #326c5e;
+    --text: #e5e5e5;
+    --muted: #a6a6a6;
+
+    --radius: 14px;
+    --shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* ----- Fondo general ----- */
+body.dark {
+    background: var(--dark-bg) !important;
+    color: var(--text);
+}
+
+.dashboard-container {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* ----- Animación suave ----- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   TARJETAS PRINCIPALES (MÉTRICAS)
+   ============================================================ */
+.metric-card {
+    background: var(--dark-card);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.metric-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 26px rgba(0,0,0,0.35);
+}
+
+.metric-card small {
+    color: var(--muted);
+}
+
+.metric-card h4 {
+    margin-top: 4px;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* ============================================================
+   TARJETAS DE LISTA Y TABLAS
+   ============================================================ */
+.list-card, .table-card, .chart-container {
+    background: var(--dark-card);
+    padding: 22px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.07);
+    animation: fadeIn 0.5s ease;
+}
+
+.list-group-item {
+    background: var(--dark-soft);
+    color: var(--text);
+    border: none;
+    margin-bottom: 6px;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    transition: background 0.2s;
+}
+
+.list-group-item:hover {
+    background: #2b2f3c;
+}
+
+.badge.bg-primary {
+    background: var(--primary) !important;
+}
+
+.badge.bg-danger {
+    background: var(--danger) !important;
+}
+
+/* --------- Tabla --------- */
+.table {
+    color: var(--text);
+}
+
+.table thead {
+    background: var(--dark-soft);
+    color: var(--primary-light);
+}
+
+.table tbody tr {
+    background: var(--dark-card);
+}
+
+.table tbody tr:hover {
+    background: #252a36;
+}
+
+/* ============================================================
+   ACTIVIDADES
+   ============================================================ */
+.activity-item {
+    background: var(--dark-soft);
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    animation: fadeIn 0.5s ease;
+}
+
+.activity-item strong {
+    color: var(--primary-light);
+}
+
+/* ============================================================
+   TITULOS
+   ============================================================ */
+h2, h3, h6 {
+    font-weight: 600;
+}
+
+h6 {
+    margin-bottom: 14px;
+    color: var(--primary-light);
+}

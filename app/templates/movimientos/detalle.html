@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>
+        📑 Detalle de Nota 
+        <span class="badge bg-primary">{{ cabecera.codigo_nota }}</span>
+        {% if cabecera.estado %}
+            {% if cabecera.estado|lower == "pendiente" %}
+                <span class="badge bg-warning text-dark">Pendiente</span>
+            {% elif cabecera.estado|lower == "aprobado" %}
+                <span class="badge bg-success">Aprobado</span>
+            {% elif cabecera.estado|lower == "anulado" %}
+                <span class="badge bg-danger">Anulado</span>
+            {% else %}
+                <span class="badge bg-secondary">{{ cabecera.estado }}</span>
+            {% endif %}
+        {% endif %}
+    </h3>
+
+    <!-- Cabecera en dos columnas -->
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <p><strong>ID:</strong> {{ cabecera.id_nota }}</p>
+            <p><strong>Tipo:</strong> {{ cabecera.tipo_movimiento }}</p>
+            <p><strong>Fecha:</strong> {{ cabecera.fecha }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Referencia:</strong> {{ cabecera.referencia or "-" }}</p>
+            <p><strong>Usuario:</strong> {{ cabecera.usuario }}</p>
+            <p><strong>Origen/Destino:</strong> {{ cabecera.origen_destino or "-" }}</p>
+        </div>
+    </div>
+
+    <p><strong>Observación:</strong> {{ cabecera.observacion or "-" }}</p>    
+
+    <h4 class="mt-4">📦 Detalles de Insumos</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Insumo</th>
+                <th>Cantidad</th>
+                <th>Unidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in detalles %}
+            <tr>
+                <td>{{ d.id_movimiento }}</td>                
+                <td>{{ d.nombre_insumo }}</td>
+                <td>{{ d.cantidad }}</td>
+                <td>{{ d.unidad_medida }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="text-center">⚠️ Sin insumos registrados.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('movimientos.index') }}" class="btn btn-secondary">⬅ Volver</a>
+</div>
+{% endblock %}

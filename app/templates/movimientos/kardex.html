@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Kardex de Insumo{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-row">
+        <h2>Kardex del Insumo {{ nombre_insumo }}</h2>
+        <div class="acciones">
+            <a href="{{ url_for('movimientos.index') }}" class="btn btn-secondary">⬅ Volver</a>
+        </div>
+    </div>
+
+    <table cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>ID Movimiento</th>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Unidad</th>
+                <th>Origen/Destino</th>
+                <th>Referencia</th>
+                <th>Saldo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in movimientos %}
+            <tr>
+                <td>{{ m.id_movimiento }}</td>
+                <td>{{ (m.fecha_movimiento|string)[:10] }}</td>
+                <td>
+                    {% if m.tipo_movimiento == 'Entrada' %}
+                        <span class="badge bg-success">Entrada</span>
+                    {% elif m.tipo_movimiento == 'Salida' %}
+                        <span class="badge bg-danger">Salida</span>
+                    {% elif m.tipo_movimiento == 'Ajuste' %}
+                        <span class="badge bg-warning text-dark">Ajuste</span>
+                    {% elif m.tipo_movimiento == 'Baja' %}
+                        <span class="badge bg-dark">Baja</span>
+                    {% elif m.tipo_movimiento == 'Devolución' %}
+                        <span class="badge bg-info text-dark">Devolución</span>
+                    {% else %}
+                        {{ m.tipo_movimiento }}
+                    {% endif %}
+                </td>
+                <td>{{ m.cantidad }}</td>
+                <td>{{ m.unidad_medida }}</td>
+                <td>{{ m.origen_destino or '—' }}</td>
+                <td>{{ m.referencia or '—' }}</td>
+                <td>
+                    {% if m.unidad_medida in ['unid','jaba','caja'] %}
+                        {{ m.saldo|int }}
+                    {% else %}
+                        {{ "%.2f"|format(m.saldo) }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" style="text-align:center;">No hay movimientos registrados para este insumo.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

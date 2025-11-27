@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ 'Editar Categoría' if categoria else 'Nueva Categoría' }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ 'Editar Categoría' if categoria else 'Nueva Categoría' }}</h2>
+    <form method="POST">      
+
+        <!-- Código + Nombre -->
+        <div class="form-row">
+            <div class="form-group small">
+                <label for="codigo_categoria">Código</label>
+                <input type="text" id="codigo_categoria" name="codigo_categoria" class="form-control"
+                    maxlength="5"
+                    value="{{ categoria.codigo_categoria if categoria else '' }}"
+                    {% if categoria %}readonly{% endif %} required>
+            </div>
+            <div class="form-group">
+                <label for="nombre_categoria">Nombre</label>
+                <input type="text" id="nombre_categoria" name="nombre_categoria"
+                    class="form-control"
+                    value="{{ categoria.nombre_categoria if categoria else '' }}" required>
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <button type="submit" class="btn">{{ 'Actualizar' if categoria else 'Guardar' }}</button>
+        <a href="{{ url_for('categorias.index') }}" class="btn btn-warning">Cancelar</a>        
+    </form>
+</div>
+{% endblock %}
